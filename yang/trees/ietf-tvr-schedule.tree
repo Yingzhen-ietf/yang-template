@@ -1,0 +1,27 @@
+module: ietf-tvr-schedule
+
+  grouping tvr-schedule:
+    +-- schedule* [schedule-id]
+       +-- schedule-id                     uint32
+       +-- (schedule-type)?
+          +--:(period)
+          |  +-- period-description?       string
+          |  +-- period-start              yang:date-and-time
+          |  +-- time-zone-identifier?     sys:timezone-name
+          |  +-- (period-type)?
+          |     +--:(explicit)
+          |     |  +-- period-end?         yang:date-and-time
+          |     +--:(duration)
+          |        +-- duration?           duration
+          +--:(recurrence)
+             +-- recurrence-first
+             |  +-- start-time-utc?   yang:date-and-time
+             |  +-- duration?         uint32
+             +-- (recurrence-end)?
+             |  +--:(until)
+             |  |  +-- utc-until?          yang:date-and-time
+             |  +--:(count)
+             |     +-- count?              uint32
+             +-- recurrence-description?   string
+             +-- frequency                 identityref
+             +-- interval?                 uint32
