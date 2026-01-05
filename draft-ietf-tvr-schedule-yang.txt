@@ -5,17 +5,17 @@
 Internet                                                           Y. Qu
 Internet-Draft                                    Futurewei Technologies
 Intended status: Standards Track                               A. Lindem
-Expires: 13 June 2026                                       Arrcus, Inc.
+Expires: 9 July 2026                                        Arrcus, Inc.
                                                                E. Kinzie
                                                                 D. Fedyk
                                                  LabN Consulting, L.L.C.
                                                              M. Blanchet
                                                                 Viagenie
-                                                        10 December 2025
+                                                          5 January 2026
 
 
                 YANG Data Model for Scheduled Attributes
-                    draft-ietf-tvr-schedule-yang-05
+                    draft-ietf-tvr-schedule-yang-06
 
 Abstract
 
@@ -40,11 +40,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 June 2026.
+   This Internet-Draft will expire on 9 July 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -72,11 +72,12 @@ Table of Contents
      5.1.  TVR Schedule YANG Module
      5.2.  TVR Schedule Node Module
      5.3.  TVR Network Topology Module
-   6.  Security Considerations
-   7.  IANA Considerations
-   8.  Acknowledgements
-   9.  Normative References
-   10. Informative References
+   6.  Operational Considerations
+   7.  Security Considerations
+   8.  IANA Considerations
+   9.  Acknowledgements
+   10. Normative References
+   11. Informative References
    Appendix A.  Example: Add a scheduled cost to OSPF interface
    Appendix B.  Example: TVR Schedule Node Configuration
    Appendix C.  Example: TVR Network Topology Configuration
@@ -352,7 +353,7 @@ Table of Contents
 
 5.  TVR Schedule YANG Modules
 
-   The following RFCs are not referenced in the document text but are
+   The following RFC is not referenced in the document text but is
    referenced in the "ietf-tvr-schedule.yang" module and "ietf-tvr-
    topology.yang" module: [RFC6991].
 
@@ -639,7 +640,7 @@ Table of Contents
 
 5.3.  TVR Network Topology Module
 
- <CODE BEGINS> file "ietf-tvr-topology@2025-06-30.yang"
+ <CODE BEGINS> file "ietf-tvr-topology@2026-01-04.yang"
  module ietf-tvr-topology {
    yang-version 1.1;
    namespace "urn:ietf:params:xml:ns:yang:ietf-tvr-topology";
@@ -681,7 +682,7 @@ Table of Contents
 
    description
      "This YANG module contains YANG definitions for describing
-     network topology with an time-variant availability schedule.
+     network topology with a time-variant availability schedule.
 
      Copyright (c) 2025 IETF Trust and the persons identified as
      authors of the code.  All rights reserved.
@@ -702,7 +703,7 @@ Table of Contents
      described in BCP 14 (RFC 2119) (RFC 8174) when, and only when,
      they appear in all capitals, as shown here.";
 
-   revision 2025-06-30 {
+   revision 2026-01-04 {
      description
        "Initial revision";
      reference
@@ -719,7 +720,7 @@ Table of Contents
        leaf node-id {
          type inet:uri;
          description
-           "Identifier for a node, uniquely identifies a node. This
+           "Identifier for a node; uniquely identifies a node. This
             may be the same as the node-id defined in the ietf-network
             module defined in RFC 8345.";
        }
@@ -764,7 +765,7 @@ Table of Contents
        }
        container available {
          description
-           "The time at which this link  becomes available.";
+           "The time at which this link becomes available.";
          uses tvr-schd:tvr-schedule {
            augment "schedule" {
              description
@@ -808,8 +809,8 @@ Table of Contents
            type boolean;
            default "false";
            description
-             "The default link availibility.  During times when the
-              schedule does not specifiy an availability, this value
+             "The default link availability.  During times when the
+              schedule does not specify an availability, this value
               is used.";
          }
          leaf default-bandwidth {
@@ -834,7 +835,33 @@ Table of Contents
  }
  <CODE ENDS>
 
-6.  Security Considerations
+6.  Operational Considerations
+
+   The TVR Schedule YANG modules provide a structured mechanism to
+   represent time-variant attributes of network elements and topologies.
+   The following aspects should be considered by Deployment of the
+   modules.
+
+   Operators should be aware that these scheduled attributes represent
+   planned state changes, not instantaneous configurations changes or
+   unplanned breakages.
+
+   There should be synchronized clocks between controllers and devices.
+   The time sources (e.g., NTP, PTP) should be accurate to avoid
+   unintended time/schedule offsets.  Inconsistent time bases can lead
+   to network misbehavior, such as routing or network stability.
+
+   The modules are to support TVR use cases where topology and
+   attributes vary as a function of time.  How control plan and data
+   plane are impacted by the schedules should be considered by the
+   operators.
+
+   The TVR schedule modules are meant to work together with other models
+   that manage node or interface attributes.  Operators should consider
+   the conflicting configurations between the scheduled and non-
+   scheduled settings and how to handle conflicts.
+
+7.  Security Considerations
 
    The YANG modules specified in this document define a schema for data
    that is designed to be accessed via network management protocols such
@@ -861,8 +888,9 @@ Table of Contents
       /node-schedule/node-power-schedule
       /node-schedule/interface-schedule
       /topology-schedule/nodes/available
-      /topology-schedule/links/available Modifications to these
-      scheduled attributes may result in a denial of service.
+      /topology-schedule/links/available
+      Modifications to these scheduled attributes may result in a denial
+      of service.
 
    Some of the readable data nodes in the ietf-tvr-node.yang module and
    ietf-tvr-topolgy.yang module may be considered sensitive or
@@ -870,7 +898,7 @@ Table of Contents
    control read access (e.g., via get, get-config, or notification) to
    these data nodes.
 
-7.  IANA Considerations
+8.  IANA Considerations
 
    This document registers a URI in the IETF XML registry [RFC3688].
    Following the format in [RFC3688], the following registration is
@@ -906,12 +934,12 @@ Table of Contents
       prefix: tvr-topo
       reference: RFC XXXX
 
-8.  Acknowledgements
+9.  Acknowledgements
 
    The YANG model was developed using the suite of YANG tools written
    and maintained by numerous authors.
 
-9.  Normative References
+10.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -969,11 +997,11 @@ Table of Contents
    [I-D.ietf-netmod-schedule-yang]
               Ma, Q., Wu, Q., Boucadair, M., and D. King, "A Common YANG
               Data Model for Scheduling", Work in Progress, Internet-
-              Draft, draft-ietf-netmod-schedule-yang-05, 16 March 2025,
+              Draft, draft-ietf-netmod-schedule-yang-06, 29 May 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-netmod-
-              schedule-yang-05>.
+              schedule-yang-06>.
 
-10.  Informative References
+11.  Informative References
 
    [RFC8340]  Bjorklund, M. and L. Berger, Ed., "YANG Tree Diagrams",
               BCP 215, RFC 8340, DOI 10.17487/RFC8340, March 2018,
@@ -1044,9 +1072,9 @@ Appendix B.  Example: TVR Schedule Node Configuration
    The following is an XML example using the ietf-tvr-node YANG module.
 
    In this example, the node has a node-id of "node:1", and it's
-   scheduled to be powered off start from 2025-07-26T17:00:00Z to
-   2025-07-26T18:00:00Z.  Interface, "eth 1", has a recurrent schedule
-   to be "not available (off)" which starts from 2025-07-20T23:00:00Z,
+   scheduled to be powered off starting from 2025-07-26T17:00:00Z to
+   2025-07-26T18:00:00Z.  Interface "eth 1" has a recurrent schedule to
+   be "not available (off)" which starts from 2025-07-20T23:00:00Z,
    lasts for 7200 seconds (2 hours) each time for 10 times every 2 days.
 
    Note: '\' line wrapping per [RFC8792].
@@ -1117,11 +1145,7 @@ Appendix B.  Example: TVR Schedule Node Configuration
                            },
                            "count": "10",
                            "recurrence-description": "daily off",
-                           "frequency": {
-                               "-xmlns:schedule": "urn:ietf:params:xml:\
-                               ns:yang:ietf-schedule",
-                               "#text": "schedule:daily"
-                           },
+                           "frequency": "ietf-schedule:daily",
                            "interval": "2",
                            "scheduled-attributes": {
                                "available": "false"
@@ -1138,13 +1162,13 @@ Appendix C.  Example: TVR Network Topology Configuration
    The following is an XML example using the ietf-tvr-topology YANG
    module.
 
-   In this example, the node with a node-id of "node:1", is scheduled to
+   In this example, the node with a node-id of "node:1" is scheduled to
    be powered off start from 2025-07-26T17:00:00Z, for 2 days and four
    and half hours.
 
-   Node, "node:2", is scheduled to be off starts from
-   2025-07-20T23:00:00Z, lasts for 7200 seconds (2 hours) each time
-   until 2025-08-20T23:00:00Z every 2 days.
+   Node "node:2" is scheduled to be off starting from
+   2025-07-20T23:00:00Z, lasting for 7200 seconds (2 hours) every two
+   days until 2025-08-20T23:00:00Z.
 
    Note: '\' line wrapping per [RFC8792].
 
@@ -1217,11 +1241,7 @@ Appendix C.  Example: TVR Network Topology Configuration
                            },
                            "utc-until": "2025-08-20T23:00:00Z",
                            "recurrence-description": "daily off",
-                           "frequency": {
-                               "-xmlns:schedule": "urn:ietf:params:\
-                               xml:ns:yang:ietf-schedule",
-                               "#text": "schedule:daily"
-                           },
+                           "frequency": "ietf-schedule:daily",
                            "interval": "2",
                            "node-available": "false"
                        }
